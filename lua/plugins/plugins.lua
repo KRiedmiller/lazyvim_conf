@@ -1,59 +1,5 @@
 return {
   {
-    "hrsh7th/nvim-cmp",
-    ---@param opts cmp.ConfigSchema
-    opts = function(_, opts)
-      local has_words_before = function()
-        unpack = unpack or table.unpack
-        local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-        return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
-      end
-
-      local cmp = require("cmp")
-
-      opts.mapping = vim.tbl_extend("force", opts.mapping, {
-        ["<CR>"] = cmp.mapping.confirm({
-          behavior = cmp.ConfirmBehavior.Insert,
-          selct = true,
-        }),
-        ["<C-q>"] = cmp.mapping.confirm({
-          behavior = cmp.ConfirmBehavior.Replace,
-          selct = true,
-        }),
-        ["<Tab>"] = cmp.mapping(function(fallback)
-          if cmp.visible() then
-            -- You could replace select_next_item() with confirm({ select = true }) to get VS Code autocompletion behavior
-            cmp.select_next_item()
-          elseif vim.snippet.active({ direction = 1 }) then
-            vim.schedule(function()
-              vim.snippet.jump(1)
-            end)
-          elseif has_words_before() then
-            cmp.complete()
-          else
-            fallback()
-          end
-        end, { "i", "s" }),
-        ["<S-Tab>"] = cmp.mapping(function(fallback)
-          if cmp.visible() then
-            cmp.select_prev_item()
-          elseif vim.snippet.active({ direction = -1 }) then
-            vim.schedule(function()
-              vim.snippet.jump(-1)
-            end)
-          else
-            fallback()
-          end
-        end, { "i", "s" }),
-      })
-      -- Make sure, cmp only activates for manual activation
-      opts.preselect = cmp.PreselectMode.None
-      opts.completion = {
-        completeopt = "noselect",
-      }
-    end,
-  },
-  {
     "echasnovski/mini.surround",
     opts = {
       mappings = {
@@ -69,5 +15,46 @@ return {
         { "gz", "", desc = "+surround" },
       },
     },
+  },
+  {
+    "saghen/blink.cmp",
+    opts = {
+      keymap = {
+        preset = "enter",
+        ["<C-y>"] = { "select_and_accept" },
+        ["<C-e>"] = { "hide", "fallback" },
+      },
+      completion = {
+        list = {
+          selection = { preselect = false, auto_insert = false },
+        },
+      },
+    },
+  },
+  {
+    "jpalardy/vim-slime",
+    ft = "python",
+    init = function()
+      -- these two should be set before the plugin loads
+      vim.g.slime_target = "neovim"
+      vim.g.slime_no_mappings = true
+    end,
+    config = function()
+      vim.g.slime_input_pid = false
+      vim.g.slime_suggest_default = true
+      vim.g.slime_menu_config = false
+      vim.g.slime_neovim_ignore_unlisted = false
+      -- options not set here are g:slime_neovim_menu_order, g:slime_neovim_menu_delimiter, and g:slime_get_jobid
+      -- see the documentation above to learn about those options
+      vim.g.slime_python_ipython = 1
+      vim.g.slime_cell_delimiter = "# %%"
+
+      -- called MotionSend but works with textobjects as well
+      vim.keymap.set("n", "<leader>r", "<Plug>SlimeMotionSend", { remap = true, silent = false })
+      vim.keymap.set("n", "<leader>rr", "<Plug>SlimeLineSend", { remap = true, silent = false })
+      vim.keymap.set("x", "<leader>rr", "<Plug>SlimeRegionSend", { remap = true, silent = false })
+      vim.keymap.set("n", "<leader>rc", "<Plug>SlimeConfig", { remap = true, silent = false })
+      vim.keymap.set("n", "<leader>rz", "<Plug>SlimeSendCell", { remap = true, silent = false })
+    end,
   },
 }
