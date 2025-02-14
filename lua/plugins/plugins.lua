@@ -21,6 +21,7 @@ return {
     opts = {
       keymap = {
         preset = "enter",
+        ["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
         ["<C-y>"] = { "select_and_accept" },
         ["<C-e>"] = { "hide", "fallback" },
       },
