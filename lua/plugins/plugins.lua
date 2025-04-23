@@ -1,4 +1,12 @@
 return {
+  -- {
+  --   "stevearc/conform.nvim",
+  --   opts = {
+  --     formatters_by_ft = {
+  --       python = { "ruff" },
+  --     },
+  --   },
+  -- },
   {
     "folke/noice.nvim",
     keys = {
