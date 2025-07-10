@@ -7,6 +7,16 @@ return {
   --     },
   --   },
   -- },
+  { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
+  {
+    "LazyVim/LazyVim",
+    opts = {
+      -- colorscheme = "catppuccin-macchiato",
+      -- colorscheme = "catppuccin-frappe",
+      colorscheme = "catppuccin-mocha",
+      -- colorscheme = "catppuccin-latte",
+    },
+  },
   {
     "folke/noice.nvim",
     keys = {
@@ -97,27 +107,27 @@ return {
     },
     lazy = false,
     branch = "regexp", -- This is the regexp branch, use this for the new version
-    config = function()
-      require("venv-selector").setup({
-        settings = {
-          search = {
-            anaconda_base = {
-              command = "fd '/bin/python$' ~/software/miniforge3/bin/ --full-path --color never",
-              type = "anaconda",
-            },
-            anaconda_env = {
-              command = "fd '/bin/python$' ~/software/miniforge3/envs/ --full-path --color never",
-              type = "anaconda",
-            },
-            my_venvs = {
-              command = "fd -p '/bin/python$' ~/.venv",
-            },
-          },
-        },
-      })
-    end,
     keys = {
       { "<leader>v", "<cmd>VenvSelect<cr>" },
+    },
+    opts = {
+      options = { debug = true },
+      search = {
+        anaconda_base = {
+          command = "fd '/bin/python$' ~/software/miniforge3/bin/ --full-path --color never",
+          type = "anaconda",
+        },
+        anaconda_env = {
+          command = "fd '/bin/python$' ~/software/miniforge3/envs/ --full-path --color never",
+          type = "anaconda",
+        },
+        my_venvs = {
+          command = "fd -p '/bin/python$' ~/.venv",
+        },
+        cwd = {
+          command = "fd '/bin/python$' $CWD --full-path",
+        },
+      },
     },
   },
   {
