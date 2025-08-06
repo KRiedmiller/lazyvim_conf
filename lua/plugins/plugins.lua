@@ -110,25 +110,30 @@ return {
     keys = {
       { "<leader>v", "<cmd>VenvSelect<cr>" },
     },
-    opts = {
-      options = { debug = true },
-      search = {
-        anaconda_base = {
-          command = "fd '/bin/python$' ~/software/miniforge3/bin/ --full-path --color never",
-          type = "anaconda",
+    config = function()
+      require("venv-selector").setup({
+        options = {
+          debug = true,
+          enable_default_searches = true,
         },
-        anaconda_env = {
-          command = "fd '/bin/python$' ~/software/miniforge3/envs/ --full-path --color never",
-          type = "anaconda",
+        search = {
+          anaconda_base = {
+            command = "fd '/bin/python$' ~/software/miniforge3/bin/ --full-path --color never",
+            type = "anaconda",
+          },
+          anaconda_env = {
+            command = "fd '/bin/python$' ~/software/miniforge3/envs/ --full-path --color never",
+            type = "anaconda",
+          },
+          my_venvs = {
+            command = "fd -p '/bin/python$' ~/.venv",
+          },
+          -- cwd = {
+          --   command = "fd '/bin/python$' $CWD --full-path",
+          -- },
         },
-        my_venvs = {
-          command = "fd -p '/bin/python$' ~/.venv",
-        },
-        cwd = {
-          command = "fd '/bin/python$' $CWD --full-path",
-        },
-      },
-    },
+      })
+    end,
   },
   {
     "jiaoshijie/undotree",
