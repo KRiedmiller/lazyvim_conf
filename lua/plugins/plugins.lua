@@ -118,15 +118,15 @@ return {
         },
         search = {
           anaconda_base = {
-            command = "fd '/bin/python$' ~/software/miniforge3/bin/ --full-path --color never",
+            command = "$FD '/bin/python$' ~/software/miniforge3/bin/ --full-path --color never",
             type = "anaconda",
           },
           anaconda_env = {
-            command = "fd '/bin/python$' ~/software/miniforge3/envs/ --full-path --color never",
+            command = "$FD '/bin/python$' ~/software/miniforge3/envs/ --full-path --color never",
             type = "anaconda",
           },
           my_venvs = {
-            command = "fd -p '/bin/python$' ~/.venv",
+            command = "$FD -p '/bin/python$' ~/.venv",
           },
           -- cwd = {
           --   command = "fd '/bin/python$' $CWD --full-path",
