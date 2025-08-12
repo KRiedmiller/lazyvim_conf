@@ -10,3 +10,5 @@ vim.keymap.set("i", "<C-k>", "<Esc><C-k>", { remap = true, desc = "switch window
 vim.keymap.set("i", "<C-h>", "<Esc><C-h>", { remap = true, desc = "switch windows in insert mode" })
 vim.keymap.set("i", "<C-l>", "<Esc><C-l>", { remap = true, desc = "switch windows in insert mode" })
 vim.keymap.set({ "n", "i" }, "<C-g>", "<C-b>", { remap = true, desc = "scroll upwards" })
+vim.keymap.set("n", "Q", "q", { remap = false, desc = "Record macro" })
+vim.keymap.set("n", "q", "<nop>")
