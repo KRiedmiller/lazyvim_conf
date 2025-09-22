@@ -37,7 +37,7 @@ return {
     },
   },
   {
-    "echasnovski/mini.surround",
+    "nvim-mini/mini.surround",
     opts = {
       mappings = {
         add = "gza", -- Add surrounding in Normal and Visual modes
@@ -106,7 +106,7 @@ return {
       { "nvim-telescope/telescope.nvim", branch = "0.1.x", dependencies = { "nvim-lua/plenary.nvim" } },
     },
     lazy = false,
-    branch = "regexp", -- This is the regexp branch, use this for the new version
+    -- branch = "regexp", -- This is the regexp branch, use this for the new version
     keys = {
       { "<leader>v", "<cmd>VenvSelect<cr>" },
     },
