@@ -7,6 +7,12 @@ return {
   --     },
   --   },
   -- },
+  {
+    "snacks.nvim",
+    opts = {
+      image = { enabled = true },
+    },
+  },
   { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
   {
     "LazyVim/LazyVim",
