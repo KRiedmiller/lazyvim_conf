@@ -15,3 +15,5 @@ vim.keymap.set({ "n", "i" }, "<C-g>", function()
 end, { remap = false, desc = "scroll upwards" })
 vim.keymap.set("n", "Q", "q", { remap = false, desc = "Record macro" })
 vim.keymap.set("n", "q", "<nop>")
+
+vim.keymap.set("n", "<leader>rv", "<cmd>echo b:terminal_job_id<CR>", { desc = "Get terminal jobid" })
