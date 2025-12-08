@@ -8,6 +8,12 @@ return {
   --   },
   -- },
   {
+    "kontura/trails.nvim",
+    dependencies = { "neovim/nvim-lspconfig" },
+    opts = {},
+    keys = { { "<leader>ct", "<cmd>lua vim.lsp.buf.incoming_calls()<cr>", desc = "Calltree" } },
+  },
+  {
     "snacks.nvim",
     opts = {
       image = { enabled = true },
