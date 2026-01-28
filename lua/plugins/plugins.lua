@@ -47,6 +47,12 @@ return {
         mode = { "i", "n", "s" },
       },
     },
+    opts = {
+      lsp = {
+        -- open manually with <C-k>
+        signature = { auto_open = { trigger = false } },
+      },
+    },
   },
   {
     "nvim-mini/mini.surround",
