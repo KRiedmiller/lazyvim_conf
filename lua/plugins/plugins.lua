@@ -87,6 +87,17 @@ return {
           selection = { preselect = false, auto_insert = false },
         },
       },
+      sources = {
+        default = { "codecompanion", "lsp", "path", "buffer" },
+        providers = {
+          codecompanion = {
+            name = "CodeCompanion",
+            module = "codecompanion.providers.completion.blink",
+            enabled = true,
+            score_offset = 100,
+          },
+        },
+      },
     },
   },
   {
@@ -247,5 +258,52 @@ return {
     config = function()
       require("quarto").setup()
     end,
+  },
+  {
+    "olimorris/codecompanion.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+    },
+
+    config = function()
+      require("codecompanion").setup({
+        adapters = {
+          http = {
+            lmstudio = function()
+              return require("codecompanion.adapters").extend("openai_compatible", {
+                name = "lmstudio",
+                env = {
+                  url = "http://hgscomp01.iwr.uni-heidelberg.de:9000",
+                  api_key = "lmstudio",
+                },
+                -- schema = {
+                --   model = {
+                --     default = "Qwen/Qwen3-Coder-30B-A3B-Instruct-FP8",
+                --   },
+                -- },
+              })
+            end,
+          },
+        },
+        strategies = {
+          chat = {
+            adapter = "lmstudio",
+          },
+          inline = {
+            adapter = "lmstudio",
+          },
+          agent = {
+            adapter = "lmstudio",
+          },
+        },
+      })
+    end,
+
+    -- Optional keybindings
+    vim.keymap.set({ "n", "v" }, "<leader>a", "", { desc = "AI" }),
+    vim.keymap.set("n", "<leader>ac", "<cmd>CodeCompanionChat Toggle<cr>", { desc = "Open CodeCompanion Chat" }),
+    vim.keymap.set("n", "<leader>ai", "<cmd>CodeCompanion<cr>", { desc = "Inline CodeCompanion" }),
+    vim.keymap.set("n", "<leader>aa", "<cmd>CodeCompanionActions<cr>", { desc = "CodeCompanion Actions" }),
   },
 }
