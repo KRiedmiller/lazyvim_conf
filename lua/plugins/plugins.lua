@@ -102,6 +102,10 @@ return {
         list = {
           selection = { preselect = false, auto_insert = false },
         },
+        menu = {
+          auto_show = true,
+          auto_show_delay = 500,
+        },
       },
       sources = {
         default = { "codecompanion", "lsp", "path", "buffer" },
@@ -321,5 +325,20 @@ return {
     vim.keymap.set("n", "<leader>ac", "<cmd>CodeCompanionChat Toggle<cr>", { desc = "Open CodeCompanion Chat" }),
     vim.keymap.set("n", "<leader>ai", "<cmd>CodeCompanion<cr>", { desc = "Inline CodeCompanion" }),
     vim.keymap.set("n", "<leader>aa", "<cmd>CodeCompanionActions<cr>", { desc = "CodeCompanion Actions" }),
+  },
+  {
+    url = "https://codeberg.org/andyg/leap.nvim.git",
+    config = function(_, opts)
+      local leap = require("leap")
+      for k, v in pairs(opts) do
+        leap.opts[k] = v
+      end
+      leap.add_default_mappings(true)
+      vim.keymap.del({ "x", "o" }, "x")
+      vim.keymap.del({ "x", "o" }, "X")
+      vim.keymap.set("n", "s", function()
+        require("leap").leap({ target_windows = { vim.api.nvim_get_current_win() } })
+      end)
+    end,
   },
 }
