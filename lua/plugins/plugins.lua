@@ -16,7 +16,14 @@ return {
   {
     "snacks.nvim",
     opts = {
-      image = { enabled = true },
+      image = {
+        doc = {
+          enabled = true,
+          inline = false,
+          float = true,
+
+        }
+      },
     },
   },
   { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
@@ -52,6 +59,15 @@ return {
         -- open manually with <C-k>
         signature = { auto_open = { trigger = false } },
       },
+      completion = {
+        menu = {
+          auto_show_delay_ms = 350,
+        },
+      },
+      -- -- conflicts with blink
+      -- completion = {
+      --   enabled = false,
+      -- },
     },
   },
   {
