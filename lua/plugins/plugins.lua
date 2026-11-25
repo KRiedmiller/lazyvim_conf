@@ -21,8 +21,7 @@ return {
           enabled = true,
           inline = false,
           float = true,
-
-        }
+        },
       },
     },
   },
@@ -130,6 +129,34 @@ return {
       vim.keymap.set("x", "<leader>rr", "<Plug>SlimeRegionSend", { remap = true, silent = false })
       vim.keymap.set("n", "<leader>rc", "<Plug>SlimeConfig", { remap = true, silent = false })
       vim.keymap.set("n", "<leader>rz", "<Plug>SlimeSendCell", { remap = true, silent = false })
+
+      -- vim-slime only drops terminals from g:slime_last_channel on TermClose.
+      -- Entries whose buffer got unloaded/wiped afterwards stay behind and crash
+      -- the terminal menu (E684 in extend_term_buffer_titles). Prune them.
+      local function prune_slime_channels()
+        local channels = vim.g.slime_last_channel
+        if type(channels) ~= "table" then
+          return
+        end
+        local alive, kept = {}, {}
+        for _, info in ipairs(vim.fn.getbufinfo()) do
+          alive[info.bufnr] = true
+        end
+        for _, channel in ipairs(channels) do
+          if alive[channel.bufnr] then
+            table.insert(kept, channel)
+          end
+        end
+        vim.g.slime_last_channel = kept
+      end
+
+      -- the events fire while the buffer is still in getbufinfo(), so defer
+      vim.api.nvim_create_autocmd({ "TermClose", "BufUnload", "BufDelete", "BufWipeout" }, {
+        group = vim.api.nvim_create_augroup("user_slime_prune", { clear = true }),
+        callback = function()
+          vim.schedule(prune_slime_channels)
+        end,
+      })
     end,
   },
   {
@@ -262,6 +289,21 @@ return {
     },
     config = function()
       require("quarto").setup()
+    end,
+  },
+  {
+    url = "https://codeberg.org/andyg/leap.nvim.git",
+    config = function(_, opts)
+      local leap = require("leap")
+      for k, v in pairs(opts) do
+        leap.opts[k] = v
+      end
+      leap.add_default_mappings(true)
+      vim.keymap.del({ "x", "o" }, "x")
+      vim.keymap.del({ "x", "o" }, "X")
+      vim.keymap.set("n", "s", function()
+        require("leap").leap({ target_windows = { vim.api.nvim_get_current_win() } })
+      end)
     end,
   },
 }
