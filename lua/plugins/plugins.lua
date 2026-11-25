@@ -21,8 +21,7 @@ return {
           enabled = true,
           inline = false,
           float = true,
-
-        }
+        },
       },
     },
   },
@@ -108,7 +107,7 @@ return {
         },
       },
       sources = {
-        default = { "codecompanion", "lsp", "path", "buffer" },
+        default = { "lsp", "codecompanion", "path", "buffer" },
         providers = {
           codecompanion = {
             name = "CodeCompanion",
@@ -145,6 +144,34 @@ return {
       vim.keymap.set("x", "<leader>rr", "<Plug>SlimeRegionSend", { remap = true, silent = false })
       vim.keymap.set("n", "<leader>rc", "<Plug>SlimeConfig", { remap = true, silent = false })
       vim.keymap.set("n", "<leader>rz", "<Plug>SlimeSendCell", { remap = true, silent = false })
+
+      -- vim-slime only drops terminals from g:slime_last_channel on TermClose.
+      -- Entries whose buffer got unloaded/wiped afterwards stay behind and crash
+      -- the terminal menu (E684 in extend_term_buffer_titles). Prune them.
+      local function prune_slime_channels()
+        local channels = vim.g.slime_last_channel
+        if type(channels) ~= "table" then
+          return
+        end
+        local alive, kept = {}, {}
+        for _, info in ipairs(vim.fn.getbufinfo()) do
+          alive[info.bufnr] = true
+        end
+        for _, channel in ipairs(channels) do
+          if alive[channel.bufnr] then
+            table.insert(kept, channel)
+          end
+        end
+        vim.g.slime_last_channel = kept
+      end
+
+      -- the events fire while the buffer is still in getbufinfo(), so defer
+      vim.api.nvim_create_autocmd({ "TermClose", "BufUnload", "BufDelete", "BufWipeout" }, {
+        group = vim.api.nvim_create_augroup("user_slime_prune", { clear = true }),
+        callback = function()
+          vim.schedule(prune_slime_channels)
+        end,
+      })
     end,
   },
   {
@@ -290,9 +317,9 @@ return {
       require("codecompanion").setup({
         adapters = {
           http = {
-            lmstudio = function()
+            hgscomp01 = function()
               return require("codecompanion.adapters").extend("openai_compatible", {
-                name = "lmstudio",
+                name = "hgscomp_qwen3",
                 env = {
                   url = "http://hgscomp01.iwr.uni-heidelberg.de:9000",
                   api_key = "lmstudio",
@@ -304,18 +331,39 @@ return {
                 -- },
               })
             end,
+            localllm = function()
+              return require("codecompanion.adapters").extend("openai_compatible", {
+                name = "local qwen3.6",
+                env = {
+                  url = "http://localhost:1234",
+                  api_key = "lmstudio",
+                },
+                -- schema = {
+                --   model = {
+                --     default = "qwen/qwen3.6-35b-a3b",
+                --   },
+                -- },
+              })
+            end,
           },
         },
-        strategies = {
-          chat = {
-            adapter = "lmstudio",
-          },
+        interactions = {
           inline = {
-            adapter = "lmstudio",
+            adapter = "hgscomp01",
+            -- model = "qwen/qwen3.5-9b",
           },
-          agent = {
-            adapter = "lmstudio",
+          background = {
+            adapter = "hgscomp01",
           },
+          -- chat = {
+          --   -- You can specify an adapter by name and model (both ACP and HTTP)
+          --   adapter = {
+          --     name = "localllm",
+          --   },
+          -- },
+          -- cmd = {
+          --   adapter = "localllm",
+          -- },
         },
       })
     end,
